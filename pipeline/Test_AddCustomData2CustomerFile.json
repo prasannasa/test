@@ -1,0 +1,72 @@
+{
+	"name": "Test_AddCustomData2CustomerFile",
+	"properties": {
+		"description": "This pipeline copies file from blob to datalake and  subsequently adds two additional columns \"customer name\" and current date to the customer file received. The pipeline is executed every minute by the trigger CustomerFileArrivalTrigger.",
+		"activities": [
+			{
+				"name": "CopyFromBlob2DataLake",
+				"description": "This copies the customer file received from blob to datalake. This is executed based on the scheduled trigger CustomerFileArrivelTrigger.",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "AzureDataLakeStoreSink"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "OptiPartner_Batch_IoTHub_Customer1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "OptiPartner_Batch_DataLake_Customer1",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "AddCustomDatatoFile",
+				"description": "This notebook executes a python script to add two column, customer name and current date. and populate them with respective values. ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CopyFromBlob2DataLake",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch/Archive/gea_file_transform_upload.py"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "PlatformTest"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

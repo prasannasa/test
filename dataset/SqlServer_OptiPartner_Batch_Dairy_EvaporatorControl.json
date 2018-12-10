@@ -1,0 +1,17 @@
+{
+	"name": "SqlServer_OptiPartner_Batch_Dairy_EvaporatorControl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQLServer2017",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		},
+		"type": "SqlServerTable",
+		"typeProperties": {
+			"tableName": "dbo.optipartner_batch_dairy_evaporatorcontrol"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

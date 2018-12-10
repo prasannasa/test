@@ -1,0 +1,47 @@
+{
+	"name": "TestConnectionNoSQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDb_Document",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		},
+		"type": "DocumentDbCollection",
+		"structure": [
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "_rid",
+				"type": "String"
+			},
+			{
+				"name": "_self",
+				"type": "String"
+			},
+			{
+				"name": "_etag",
+				"type": "String"
+			},
+			{
+				"name": "_attachments",
+				"type": "String"
+			},
+			{
+				"name": "_ts",
+				"type": "Int64"
+			},
+			{
+				"name": "Prop_0",
+				"type": "String"
+			}
+		],
+		"typeProperties": {
+			"collectionName": "OptiPartner_Dairy"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,29 @@
+{
+	"name": "Test_Model_Build",
+	"properties": {
+		"description": "This pipeline builds a predictive model by executing the gea_build_model.py script.",
+		"activities": [
+			{
+				"name": "Test_Build_Predictive_Model",
+				"type": "DatabricksNotebook",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch/Archive/gea_build_model"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "ARPrediction"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

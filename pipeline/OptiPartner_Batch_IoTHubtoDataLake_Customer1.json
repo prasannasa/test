@@ -1,0 +1,44 @@
+{
+	"name": "OptiPartner_Batch_IoTHubtoDataLake_Customer1",
+	"properties": {
+		"activities": [
+			{
+				"name": "BlobtoDataLake_Customer1",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "AzureDataLakeStoreSink"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "OptiPartner_Batch_IoTHub_Customer1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "OptiPartner_Batch_DataLake_Customer1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

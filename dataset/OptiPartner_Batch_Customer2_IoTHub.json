@@ -1,0 +1,27 @@
+{
+	"name": "OptiPartner_Batch_Customer2_IoTHub",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FromBlobS1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		},
+		"type": "AzureBlob",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"nullValue": "\\N",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": false
+			},
+			"fileName": "Customer2*.csv",
+			"folderPath": "hubtoblob"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

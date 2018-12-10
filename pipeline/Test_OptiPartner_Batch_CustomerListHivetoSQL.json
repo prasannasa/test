@@ -1,0 +1,46 @@
+{
+	"name": "Test_OptiPartner_Batch_CustomerListHivetoSQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "FromHiveToSQL",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "HiveSource",
+						"query": "SELECT * FROM `gea_hive_production`.`optipartner_batch_dairy_customerlist`"
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE [dbo].[optipartner_batch_dairy_customerlist]"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "HDInisght_Hive",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServer_OptiPartner_Batch_Dairy_CustomerList",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "PlatformTest"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

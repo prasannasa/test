@@ -1,0 +1,25 @@
+{
+	"name": "CutsomerFIleArrivalTrigger",
+	"properties": {
+		"description": "This trigger runs every minute to check if a new customer file is written to blob storage and then copies the customer file to datalake. ",
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Test_AddCustomData2CustomerFile",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2018-08-21T00:36:27.881Z",
+				"endTime": "2018-08-23T05:11:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

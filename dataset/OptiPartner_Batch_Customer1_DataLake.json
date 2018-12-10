@@ -1,0 +1,27 @@
+{
+	"name": "OptiPartner_Batch_Customer1_DataLake",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "geadatalakelinkedserv",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		},
+		"type": "AzureDataLakeStoreFile",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"nullValue": "\\N",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": false
+			},
+			"fileName": "",
+			"folderPath": "Staging_Location/External/Customer1/OptiPartner/BatchData/Logs"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

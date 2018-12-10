@@ -1,0 +1,26 @@
+{
+	"name": "Custom_Python_VM",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FTPLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "PlatformTest"
+		},
+		"type": "FileShare",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"nullValue": "\\N",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": false
+			},
+			"folderPath": "Logs"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

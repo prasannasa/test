@@ -1,0 +1,29 @@
+{
+	"name": "Test_Generate_Report",
+	"properties": {
+		"description": "This pipeline generates a custom report by running the gea_report_generation.py program.",
+		"activities": [
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch_Dairy/OptiPartner_Report_Batch"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

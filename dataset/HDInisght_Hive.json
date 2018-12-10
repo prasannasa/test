@@ -1,0 +1,14 @@
+{
+	"name": "HDInisght_Hive",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Hivelinkedservice",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "General"
+		},
+		"type": "HiveObject"
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

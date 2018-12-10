@@ -1,0 +1,252 @@
+{
+	"name": "OptiPartner_Batch_MainRoutine",
+	"properties": {
+		"activities": [
+			{
+				"name": "OptiPartner_HIVE_Load_Batch",
+				"type": "DatabricksNotebook",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch_Dairy/OptiPartner_HIVE_Load_Batch"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HIVE2SQL_OptiPartner_Batch_Dairy_CombinationControl",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "OptiPartner_HIVE_to_SQL_Dairy_Daily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "HiveSource",
+						"query": "SELECT * FROM `gea_hive_production`.`optipartner_batch_dairy_combinationcontrol_daily`;"
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE [dbo].[optipartner_batch_dairy_combinationcontrol]"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "HDInisght_Hive",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServer_OptiPartner_Batch_Dairy_CombinationControl",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "HIVE2SQL_OptiPartner_Batch_Dairy_DryerControl",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "HIVE2SQL_OptiPartner_Batch_Dairy_CombinationControl",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "HiveSource",
+						"query": "SELECT * FROM `gea_hive_production`.`optipartner_batch_dairy_dryercontrol_daily`;"
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE [dbo].[optipartner_batch_dairy_dryercontrol]"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "HDInisght_Hive",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServer_OptiPartner_Batch_Dairy_DryerControl",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "HIVE2SQL_OptiPartner_Batch_Dairy_EvaporatorControl",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "HIVE2SQL_OptiPartner_Batch_Dairy_DryerControl",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "HiveSource",
+						"query": "SELECT * FROM `gea_hive_production`.`optipartner_batch_dairy_evaporatorcontrol_daily`;"
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE [dbo].[optipartner_batch_dairy_evaporatorcontrol]"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "HDInisght_Hive",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServer_OptiPartner_Batch_Dairy_EvaporatorControl",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "OptiPartner_HIVE_to_SQL_Dairy_Daily",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "OptiPartner_HIVE_Load_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch_Dairy/OptiPartner_HIVE_to_SQL_Daily"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HIVE2SQL_OptiPartner_Batch_Dairy_CustomerList",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "HIVE2SQL_OptiPartner_Batch_Dairy_EvaporatorControl",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "HiveSource",
+						"query": "SELECT * FROM `gea_hive_production`.`optipartner_batch_dairy_customerlist`;"
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE [dbo].[optipartner_batch_dairy_customerlist]"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "HDInisght_Hive",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServer_OptiPartner_Batch_Dairy_CustomerList",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Report_Generation_OptiPartner_Dairy",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "HIVE2SQL_OptiPartner_Batch_Dairy_CustomerList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch_Dairy/OptiPartner_Report_Batch"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "OptiPartner_Dairy"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

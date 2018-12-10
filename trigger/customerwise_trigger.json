@@ -1,0 +1,38 @@
+{
+	"name": "customerwise_trigger",
+	"properties": {
+		"description": "Trigger the CopyData functionality in the pipeline.",
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "OptiPartner_Batch_IoTHubtoDataLake_Customer1",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "OptiPartner_Batch_IoTHubtoDataLake_Customer2",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2018-08-30T18:52:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						2
+					]
+				}
+			}
+		}
+	}
+}

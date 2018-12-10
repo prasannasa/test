@@ -1,0 +1,28 @@
+{
+	"name": "PlatformTest_RunDataBrick_Notebook",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataFactory_Test",
+				"type": "DatabricksNotebook",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/Tutorials/DataFactory_Test"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "PlatformTest"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

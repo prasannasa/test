@@ -1,0 +1,29 @@
+{
+	"name": "Test_Prediction",
+	"properties": {
+		"description": "This pipeline predicts using the model built by Test_Model_Build pipeline.",
+		"activities": [
+			{
+				"name": "Prediction",
+				"type": "DatabricksNotebook",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Shared/Projects/OptiPartner_Batch/Archive/gea_prediction"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "ARPrediction"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
