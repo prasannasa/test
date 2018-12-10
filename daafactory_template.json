@@ -1,0 +1,277 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "dataFactoryName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the data factory. Must be globally unique."
+            }
+        },
+        "dataFactoryLocation": {
+            "type": "string",
+            "allowedValues": [
+                "West Europe"
+            ],
+            "defaultValue": "West Europe",
+            "metadata": {
+                "description": "Location of the data factory. Currently, only West Europe is supported. "
+            }
+        },
+        "storageAccountNameIn": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Azure storage account that contains the input/output data."
+            }
+        },
+        "storageAccountKeyIn": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Key for the Azure storage account."
+            }
+        },
+        "dataLakeStoreUri": {
+              "type": "string",
+              "metadata": {
+                "description": "URI of Azure Data Lake store"
+              }
+        },
+        "dataLakeStoreServicePrincipalID": {
+            "type": "string",
+            "metadata": {
+              "description": "ID of Azure Service Principal used for accessing Data Lake"
+            }
+          },
+          "dataLakeStoreServicePrincipalKey": {
+            "type": "securestring",
+            "metadata": {
+              "description": "Key for Azure Service Principal used for accessing Data Lake"
+            }
+          },
+        "sourceBlobContainer": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the blob container in the Azure Storage account."
+            }
+        },
+        "sourceBlobFolder": {
+            "type": "string",
+            "metadata": {
+                "description": "The folder in the blob container that has the input file."
+            }
+        },
+        "sourceBlobName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the input file/blob."
+            }
+        },
+        "datalakeFolderPath": {
+            "type": "string",
+            "metadata": {
+                "description": "The folder in the blob container that will hold the transformed data."
+            }
+        },
+        "datalakeFileName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the output file/blob."
+            }
+        },
+        "triggerStartTime": {
+            "type": "string",
+            "metadata": {
+                "description": "Start time for the trigger."
+            }
+        },
+        "triggerEndTime": {
+            "type": "string",
+            "metadata": {
+                "description": "End time for the trigger."
+            }
+        }
+    },
+    "variables": {
+        "azureStorageLinkedServiceName": "FromBlobS1",
+        "azuredataLakeLinkedServiceName": "geadatalakelinkedserv",
+        "blobInputDatasetName": "OptiPartner_Batch_IoTHub_Customer2",
+        "dataLakeDatasetName": "OptiPartner_Batch_DataLake_Customer2",
+        "pipelineName": "OptiPartner_Batch_IoTHubtoDataLake_Customer2",
+        "triggerName": "customerwise_trigger"
+    },
+    "resources": [{
+        "name": "[parameters('dataFactoryName')]",
+        "apiVersion": "2017-09-01-preview",
+        "type": "Microsoft.DataFactory/factories",
+        "location": "[parameters('dataFactoryLocation')]",
+        "identity": {
+            "type": "SystemAssigned"
+        },
+        "resources": [{
+                "type": "linkedservices",
+                "name": "[variables('azureStorageLinkedServiceName')]",
+                "dependsOn": [
+                    "[parameters('dataFactoryName')]"
+                ],
+                "apiVersion": "2017-09-01-preview",
+                "properties": {
+                    "type": "AzureStorage",
+                    "description": "Azure Storage linked service",
+                    "typeProperties": {
+                        "connectionString": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountNameIn'),';AccountKey=',parameters('storageAccountKeyIn'))]",
+                            "type": "SecureString"
+                        }
+                    }
+                }
+            },
+            {
+                "type": "linkedservices",
+                "name": "[variables('azuredataLakeLinkedServiceName')]",
+                "dependsOn": [
+                    "[parameters('dataFactoryName')]"
+                ],
+                "apiVersion": "2017-09-01-preview",
+                "properties": {
+                    "type": "AzureDataLakeStore",
+                    "description": "Azure Storage linked service",
+                    "typeProperties": {
+                        "dataLakeStoreUri": "[parameters('dataLakeStoreUri')]",
+                        "servicePrincipalId": "[parameters('dataLakeStoreServicePrincipalID')]",
+                        "servicePrincipalKey": "[parameters('dataLakeStoreServicePrincipalKey')]",
+                        "tenant": "[subscription().tenantId]",
+                        "subscriptionId": "[subscription().subscriptionId]",
+                        "resourceGroupName": "[resourceGroup().name]"
+                    }
+                }
+            },
+            {
+                "type": "datasets",
+                "name": "[variables('blobInputDatasetName')]",
+                "dependsOn": [
+                    "[parameters('dataFactoryName')]",
+                    "[variables('azureStorageLinkedServiceName')]"
+                ],
+                "apiVersion": "2017-09-01-preview",
+                "properties": {
+                    "type": "AzureBlob",
+                    "typeProperties": {
+                        "folderPath": "[concat(parameters('sourceBlobContainer'), '/', parameters('sourceBlobFolder'), '/')]",
+                        "fileName": "[parameters('sourceBlobName')]"
+                    },
+                    "linkedServiceName": {
+                        "referenceName": "[variables('azureStorageLinkedServiceName')]",
+                        "type": "LinkedServiceReference"
+                    }
+                }
+            },
+            {
+                "type": "datasets",
+                "name": "[variables('dataLakeDatasetName')]",
+                "dependsOn": [
+                    "[parameters('dataFactoryName')]",
+                    "[variables('azuredataLakeLinkedServiceName')]"
+                ],
+                "apiVersion": "2017-09-01-preview",
+                "properties": {
+                    "type": "AzureDataLakeStore",
+                    "typeProperties": {
+                        "folderPath": "[concat(variables('dataFactoryName'), '/', parameters('datalakeFolderPath'), '/')]",
+                        "fileName": "[parameters('datalakeFileName')]",
+                        "format": {
+                            "type": "TextFormat",
+                            "columnDelimiter": ","
+                          }
+                    },
+                    "linkedServiceName": {
+                        "referenceName": "[variables('azuredataLakeLinkedServiceName')]",
+                        "type": "LinkedServiceReference"
+                    }
+                }
+            },
+            {
+                "type": "Microsoft.DataFactory/factories/pipelines",
+                "name": "[concat(parameters('dataFactoryName'), '/', variables('pipelineName'))]",
+                "dependsOn": [
+                    "[parameters('dataFactoryName')]",
+                    "[variables('azureStorageLinkedServiceName')]",
+                    "[variables('azuredataLakeLinkedServiceName')]",
+                    "[variables('blobInputDatasetName')]",
+                    "[variables('dataLakeDatasetName')]"
+                ],
+                "apiVersion": "2018-06-01",
+                "properties": {
+                    "activities": [{
+                        "name": "BlobtoDatalake_Customer2",
+                        "description": "Copy data frm Azure blob to Azure datalake",
+                        "type": "Copy",
+                        "dependsOn": [],
+                        "policy": {
+                            "timeout": "7.00:00:00",
+                            "retry": 0,
+                            "retryIntervalInSeconds": 30,
+                            "secureOutput": false
+                        },
+                        "userProperties": [],
+                        "typeProperties": {
+                            "source": {
+                                "type": "BlobSource",
+                                "recursive": true
+                            },
+                            "sink": {
+                                "type": "AzureDataLakeStoreSink"
+                            },
+                            "enableStaging": false,
+                            "dataIntegrationUnits": 0
+                        },
+                        "inputs": [{
+                            "referenceName": "[variables('blobInputDatasetName')]",
+                            "type": "DatasetReference",
+                            "parameters": {}
+                        }],
+                        "outputs": [{
+                            "referenceName": "[variables('dataLakeDatasetName')]",
+                            "type": "DatasetReference",
+                            "parameters": {}
+                        }]
+                    }],
+                    "folder": {
+                        "name": "OptiPartner_Dairy"
+                    },
+                    "annotations": []
+                }
+            },
+            {
+                "type": "triggers",
+                "name": "[variables('triggerName')]",
+                "dependsOn": [
+                    "[parameters('dataFactoryName')]",
+                    "[variables('azureStorageLinkedServiceName')]",
+                    "[variables('blobInputDatasetName')]",
+                    "[variables('dataLakeDatasetName')]",
+                    "[variables('pipelineName')]"
+                ],
+                "apiVersion": "2017-09-01-preview",
+                "properties": {
+                    "type": "ScheduleTrigger",
+                    "typeProperties": {
+                        "recurrence": {
+                            "frequency": "Hour",
+                            "interval": 1,
+                            "startTime": "[parameters('triggerStartTime')]",
+                            "endTime": "[parameters('triggerEndTime')]",
+                            "timeZone": "UTC"
+                        }
+                    },
+                    "pipelines": [{
+                        "pipelineReference": {
+                            "type": "PipelineReference",
+                            "referenceName": "ArmtemplateSampleCopyPipeline"
+                        },
+                        "parameters": {}
+                    }]
+                }
+            }
+        ]
+    }]
+}

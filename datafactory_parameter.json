@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dataFactoryName": {
+      "value": "geaddzdatafactorytest"
+    },    
+    "dataFactoryLocation": {
+      "value": "West Europe"
+    },
+    "storageAccountNameIn": {
+      "value": "geaddzhubtoblob"
+    },
+    "storageAccountKeyIn": {
+      "value": "qlrpzujqSf+YtXrsYLLNH2IoA4n6nnv06Il1kMRWLAatAGxTGKRrsIx+xuMHfvbRJ59MBcQzkhx+0eMKcg1yXA=="
+    },
+    "dataLakeStoreUri": {
+      "value": "https://geadatalake.azuredatalakestore.net/webhdfs/v1",
+      "metadata": {
+        "description": "URI for your pre-created data lake store."
+        }
+    },
+    "dataLakeStoreServicePrincipalID": {
+      "value": "8ee4831e-2096-4e13-9902-71fe4d94d085",
+      "metadata": {
+        "description": "Service Principal ID from your pre-created Azure AD application record"
+        }
+    },
+    "dataLakeStoreServicePrincipalKey": {
+      "value": "%YourDataLakeStoreSPKey%",
+      "metadata": {
+        "description": "Key from your pre-created Azure AD application record"
+        }
+    },
+    "sourceBlobContainer": {
+      "value": "????"
+    },
+    "sourceBlobFolder": {
+      "value": "hubtoblob"
+    },
+    "sourceBlobName": {
+      "value": "Customer2*.csv"
+    },
+    "datalakeFolderPath": {
+      "value": "Staging_Location/External/Customer2/OptiPartner/BatchData/Logs"
+    },
+    "datalakeFileName": {
+      "value": "Customer2*.csv"
+    },
+    "triggerStartTime": {
+        "value": "2018-12-07T00:00:00. Set to today"
+    },
+    "triggerEndTime": {
+        "value": "2018-12-08T00:00:00. Set to tomorrow"
+    }
+  }
+}
